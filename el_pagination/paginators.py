@@ -17,10 +17,7 @@ class CustomPage(Page):
     def start_index(self):
         """Return the 1-based index of the first item on this page."""
         paginator = self.paginator
-        # Special case, return zero if no items.
-        if paginator.count == 0:
-            return 0
-        elif self.number == 1:
+        if self.number == 1:
             return 1
         return (
             (self.number - 2) * paginator.per_page + paginator.first_page + 1)
