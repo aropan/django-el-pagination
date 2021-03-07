@@ -4,7 +4,7 @@
 PYTHON3 = python3
 VENV3 = .venv3
 
-LINTER = flake8 --show-source endless_pagination/ tests/
+LINTER = flake8 --show-source el_pagination/ tests/
 MANAGE = python ./tests/manage.py
 
 PYTHON = $(PYTHON3)

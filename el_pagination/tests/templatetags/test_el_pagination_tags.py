@@ -395,6 +395,47 @@ class ShowMoreTest(EtreeTemplateTagsTestMixin, TestCase):
         self.assertEqual('working', loading.text)
 
 
+@skip_if_old_etree
+class ShowMoreTableTest(EtreeTemplateTagsTestMixin, TestCase):
+
+    def test_first_page_next_url(self):
+        # Ensure the link to the next page is correctly generated
+        # in the first page.
+        template = '{% paginate objects %}{% show_more_table %}'
+        tree = self.render(self.request(), template)
+        link = tree.find('.//a[@class="endless_more"]')
+        expected = '/?{0}={1}'.format(settings.PAGE_LABEL, 2)
+        self.assertEqual(expected, link.attrib['href'])
+
+    def test_page_next_url(self):
+        # Ensure the link to the next page is correctly generated.
+        template = '{% paginate objects %}{% show_more_table %}'
+        tree = self.render(self.request(page=3), template)
+        link = tree.find('.//a[@class="endless_more"]')
+        expected = '/?{0}={1}'.format(settings.PAGE_LABEL, 4)
+        self.assertEqual(expected, link.attrib['href'])
+
+    def test_last_page(self):
+        # Ensure the output for the last page is empty.
+        template = '{% paginate 40 objects %}{% show_more_table %}'
+        tree = self.render(self.request(page=2), template)
+        self.assertIsNone(tree)
+
+    def test_customized_label(self):
+        # Ensure the link to the next page is correctly generated.
+        template = '{% paginate objects %}{% show_more_table "again and again" %}'
+        tree = self.render(self.request(), template)
+        link = tree.find('.//a[@class="endless_more"]')
+        self.assertEqual('again and again', link.text)
+
+    def test_customized_loading(self):
+        # Ensure the link to the next page is correctly generated.
+        template = '{% paginate objects %}{% show_more_table "more" "working" %}'
+        tree = self.render(self.request(), template)
+        loading = tree.find('.//*[@class="endless_loading"]')
+        self.assertEqual('working', loading.text)
+
+
 class GetPagesTest(TemplateTagsTestMixin, TestCase):
 
     def test_page_list(self):
